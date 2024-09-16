@@ -1,0 +1,15 @@
+services:
+  derper:
+    container_name: self-derper
+    build:
+      context: .
+    restart: always
+    ports:
+      - 50443:50443
+      - 3478:3478/udp
+    volumes:
+      - /var/run/tailscale/tailscaled.sock:/var/run/tailscale/tailscaled.sock
+    environment:
+      - DERP_CERTS=/apps/certs
+      - DERP_ADDR=:50443
+      - DERP_VERIFY_CLIENTS=true
