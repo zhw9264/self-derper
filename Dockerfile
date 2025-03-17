@@ -4,8 +4,11 @@ RUN go env -w GOPROXY=https://goproxy.cn,direct
 
 RUN go install tailscale.com/cmd/derper@latest
 
-# 去除域名验证（删除cmd/derper/cert.go文件的91~93行）
-RUN find /go/pkg/mod/tailscale.com@*/cmd/derper/cert.go -type f -exec sed -i '91,93d' {} +
+# 去除域名验证
+# if hi.ServerName != m.hostname && !m.noHostname {
+#     return nil, fmt.Errorf("cert mismatch with hostname: %q", hi.ServerName)
+# }
+RUN find /go/pkg/mod/tailscale.com@*/cmd/derper/cert.go -type f -exec sed -i '/if hi\.ServerName != m\.hostname \&\& !m\.noHostname {/,/}/ s/^/\/\//' {} +
 
 RUN derper_dir=$(find /go/pkg/mod/tailscale.com@*/cmd/derper -type d) && \
 	cd $derper_dir && \
